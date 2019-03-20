@@ -4,9 +4,14 @@ class Card:
     rank = 0
     suits = 0
     number = 0
-    Card.next()
+    #Card.next()
     cardSuit = ""
     cardRank = ""
+
+    def __init__(self, val):
+            self.val = data
+            self.next = None
+            self.prev = None
 
     def Card(self, rank, suits, number, temp):
         self._rank = rank
@@ -50,8 +55,14 @@ class CardDeck:
     suits = 0
     counter = 0
 
-    def cardDeck:
+    def cardDeck():
         for rankIndex in range (0, 13):
             for suitsIndex in range (0, 4):
                 print(rankIndex)
                 #deck[counter] = 
+
+def main():
+    CardDeck.cardDeck()
+
+if __name__ == "__main__":
+    main()
