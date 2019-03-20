@@ -55,11 +55,17 @@ class CardDeck:
     suits = 0
     counter = 0
 
+    def suits(suits):
+        suitList = ["Spades", "Hearts", "Clubs", "Diamonds"]
+        return suitList
+
+    def rank(rank):
+        rankList = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"]
+
     def cardDeck():
         for rankIndex in range (0, 13):
             for suitsIndex in range (0, 4):
-                print(rankIndex)
-                #deck[counter] = 
+                 
 
 def main():
     CardDeck.cardDeck()
