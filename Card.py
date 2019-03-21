@@ -1,5 +1,6 @@
 import sys
 import random
+import socket
 
 class Card:
     # rank = 0
@@ -81,9 +82,35 @@ class CardDeck:
             deck[randomNum] = tempCard
         return deck
 
+class ClientInteractions:
+    def confirmPlay(socket):
+        while True:
+            global connection, clientAddress = socket.accept()
+            connection.send("Do you want to play?".encode())
+            global response = connection.recv(1024)
+        if (response == "Yes"):
+            sendDeck()
+            #playGame()
+        elif (response == "No"):
+            sys.exit(-1)
+
+
+    def sendDeck(shuffledCardDeck, socket):
+        clientOneCards = shuffledCardDeck[:25]
+        clientTwoCards = shuffledCardDeck[26:]
+        connection.send(clientOneCards)
+
+
+
 def main():
     newCardDeck = CardDeck.cardDeck()
     shuffledCardDeck = CardDeck.shuffle(newCardDeck)
+    serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    serverSocket.bind(("127.0.0.1", 51819))
+    serverSocket.listen(2)
+    clientOneSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    #clientOneSocket
+    clientTwoSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     print(shuffledCardDeck)
 
 if __name__ == "__main__":
