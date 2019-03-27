@@ -1,6 +1,10 @@
 import sys
 import random
 import socket
+import pygame
+from pygame.locals import *
+import random
+import copy
 
 class Card:
     # rank = 0
@@ -81,6 +85,8 @@ class CardDeck:
             card = randomNum
             deck[randomNum] = tempCard
         return deck
+
+    def 
 
 class ClientInteractions:
     def confirmPlay(socket):
