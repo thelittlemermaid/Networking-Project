@@ -11,37 +11,12 @@ white = (255,255,255)
 gray = (192,192,192)
 
 class Card:
-    # rank = 0
-    # suits = 0
-    # number = 0
-    # Card.next()
-    # cardSuit = ""
-    # cardRank = ""
-
-    # def __init__(self, val):
-    #         self.val = data
-    #         self.next = None
-    #         self.prev = None
-
-    def __init__(self, rank, suits, number, temp, *args, **kwargs):
+    def __init__(self, rank, suits, number, temp, image, *args, **kwargs):
         self._rank = rank
         self._suits = suits
         self._number = number
         self._temp = temp
-        #self._image = image
-    
-    # def __init__(self, rank, suits):
-    #     self.rank = rank
-    #     self.suits = suits
-
-    # def set_rank(self, rank):
-    #     self._rank = rank
-
-    # def set_suits(self, suits):
-    #     self._suits = suits
-      
-    # def set_number(self, number):
-    #     self._number = number
+        self._image = image
 
     def cardSuit(self, cardSuit):
         self._cardSuit = cardSuit
@@ -50,27 +25,12 @@ class Card:
     def cardRank(self, cardRank):
         self._cardRank = cardRank
         return cardRank
-
-    # def get_rank(self):
-    #     return self._rank
-
-    # def get_suit(self):
-    #     return self._suits
-
-    # def get_number(self):
-    #     return self._number
-
-    # def get_cardSuit(self):
-    #     return self._cardSuit
-
-    # def get_cardRank(self):
-    #     return self._cardRank
+    
+    def cardImage(self, cardImage):
+        self._cardImage = cardImage
+        return cardImage
 
 class CardDeck:
-    #deck = []
-    rank = 0
-    suits = 0
-    #counter = 0
 
     def cardDeck():
         suitList = ["Spades", "Hearts", "Clubs", "Diamonds"]
@@ -78,18 +38,19 @@ class CardDeck:
         deck = []
         for rankIndex in range (0, 13):
             for suitsIndex in range (0, 4):
-                newCard = Card(rankIndex, suitsIndex, number = 0, temp = 0)
+                newCard = Card(rankIndex, suitsIndex, number = 0, temp = 0, image = 0)
                 deck.append((newCard.cardRank(rankList[rankIndex])) + " of " + (newCard.cardSuit(suitList[suitsIndex])))
+                suitImage = suitList[suitsIndex].lower()
+                suitImage = suitImage[:1]
+                rankImage = rankList[rankIndex].lower()
+                rankImage = rankImage[:1]
+                image = pygame.image.load('cardImages/cards/' + rankImage + suitImage + '.png')
+                print (newCard.cardImage(image))
+                
         return deck
 
-    def assignImages(deck):
-        for card in reversed(deck):
-            newCard = Card()
-            
-
-
     def shuffle(deck):
-        tempCard = Card(rank = None, suits = None, number = None, temp = None)
+        tempCard = Card(rank = None, suits = None, number = None, temp = None, image = None)
         for card in deck:
             randomNum = random.randint(0, 51)
             tempCard = card
@@ -114,11 +75,12 @@ class GUI:
         ratioB = pygame.draw.rect(background, gray, (555, 420, 75, 50))
 
 # class ClientInteractions:
+#     global connection, clientAddress, response
 #     def confirmPlay(socket):
 #         while True:
-#             global connection, clientAddress = socket.accept()
+#             connection, clientAddress = socket.accept()
 #             connection.send("Do you want to play?".encode())
-#             global response = connection.recv(1024)
+#             response = connection.recv(1024)
 #         if (response == "Yes"):
 #             sendDeck()
 #             #playGame()
@@ -142,8 +104,8 @@ def main():
     # clientOneSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # clientOneSocket
     # clientTwoSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #print(shuffledCardDeck)
-    window = GUI
+    # print(shuffledCardDeck)
+    # window = GUI
 
 if __name__ == "__main__":
     main()
