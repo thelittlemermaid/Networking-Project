@@ -38,6 +38,7 @@ class Card:
       
         merged_list = tuple(zip(list1, list2))  
         return merged_list 
+
 class CardDeck:
 
     def cardDeck():
@@ -62,19 +63,55 @@ class CardDeck:
                 images.append(newCard.cardImage(image))
 
         return images
-
-    def shuffle(deck):
-        tempCard = Card(rank = None, suits = None, number = None, temp = None, image = None)
-        for card in deck:
-            randomNum = random.randint(0, 51)
-            tempCard = card
-            card = randomNum
-            deck[randomNum] = tempCard
-        return deck
     
     def split_list(a_list):
         half = len(a_list)//2
         return a_list[:half], a_list[half:]
+
+
+def main():
+    newCardDeck = CardDeck.cardDeck()
+    newImageDeck = CardDeck.imageDeck()
+    newPlayingDeck = Card.merge(newCardDeck, newImageDeck)
+    playerWins = 0
+    serverWins = 0
+    count = 0
+    #print(newPlayingDeck)
+    shuffledPlayingDeck = random.sample(newPlayingDeck, len(newPlayingDeck))
+    playerHand, serverHand = CardDeck.split_list(shuffledPlayingDeck)
+    print("Player's # of Cards: ", len(playerHand))
+    print("Server's # of Cards: ", len(serverHand))
+    
+    for card in range(0, 10):
+
+        print("Player's card is: ", playerHand[card])
+        print("Server's card is: ", serverHand[card], "\r\n")
+       
+        
+        playerHand[card]
+        serverHand[card]
+        playerCard = [item[card] for item in playerHand]
+        serverCard = [item[card] for item in serverHand]
+        print('Player Wins: ', playerWins)
+        print('Server Wins: ', serverWins, "\r\n")
+        if(playerCard > serverCard):
+            
+            count += 1
+            playerWins += 1
+
+        if(playerCard < serverCard):
+            
+            count += 1
+            serverWins += 1
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
 
 # class GUI:
 #     def __init__():
@@ -112,37 +149,10 @@ class CardDeck:
 #         connection.send(clientOneCards)
 
 
-
-def main():
-    newCardDeck = CardDeck.cardDeck()
-    newImageDeck = CardDeck.imageDeck()
-    newPlayingDeck = Card.merge(newCardDeck, newImageDeck)
-    count = 0
-    #print(newPlayingDeck)
-    shuffledPlayingDeck = random.sample(newPlayingDeck, len(newPlayingDeck))
-    playerHand, serverHand = CardDeck.split_list(shuffledPlayingDeck)
-    print("Player's first card is: ", playerHand[0])
-    print("Server's first card is: ", serverHand[0])
-    print("Player's # of Cards: ", len(playerHand))
-    print("Server's # of Cards: ", len(serverHand))
-
-    playerCard = playerHand[0].pop()
-    serverCard = serverHand[0].pop()
-
-    while(count < 5):
-        if(playerCard.cardRank > serverCard.cardRank):
-            playerCard.push(playerHand)
-            serverCard.push(playerHand)
-            count += 1
-        elif(playerCard.cardRank < serverCard.cardRank):
-            playerCard.push(serverHand)
-            serverCard.push(serverHand)
-            count += 1
+# For Main()
 
 
-
-    
-    # serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # serverSocket.bind(("127.0.0.1", 51819))
     # serverSocket.listen(2)
     # clientOneSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -150,8 +160,3 @@ def main():
     # clientTwoSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # print(shuffledCardDeck)
     # window = GUI
-
-if __name__ == "__main__":
-    main()
-
-   
