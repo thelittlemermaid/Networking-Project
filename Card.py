@@ -6,17 +6,14 @@ from pygame.locals import *
 import random
 from random import shuffle
 import copy
-
-black = (0,0,0)
-white = (255,255,255)
-gray = (192,192,192)
+import pprint
+from pprint import pprint
 
 class Card:
-    def __init__(self, rank, suits, number, temp, image, *args, **kwargs):
+    def __init__(self, rank, rankValue, suits, image, *args, **kwargs):
         self._rank = rank
+        self._rankValue = rankValue
         self._suits = suits
-        self._number = number
-        self._temp = temp
         self._image = image
 
     def cardSuit(self, cardSuit):
@@ -35,7 +32,6 @@ class Card:
         return self._image
 
     def merge(list1, list2): 
-      
         merged_list = tuple(zip(list1, list2))  
         return merged_list 
 
@@ -47,22 +43,12 @@ class CardDeck:
         deck = []
         for rankIndex in range (0, 13):
             for suitsIndex in range (0, 4):
-                newCard = Card(rankIndex, suitsIndex, number = 0, temp = 0, image = 0)
-                deck.append((newCard.cardRank(rankList[rankIndex])) + (newCard.cardSuit(suitList[suitsIndex])))
+                image = pygame.image.load('cardImages/cards/' + rankList[rankIndex] + suitList[suitsIndex] + '.png')
+                newCard = Card(rankList[rankIndex], rankIndex, suitList[suitsIndex], image = image)
+                deck.append(newCard)
                             
         return deck
 
-    def imageDeck():
-        suitList = ["s" , "h", "c", "d"]
-        rankList = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "j", "q", "k", "a"]
-        images = []
-        for rankIndex in range (0, 13):
-            for suitsIndex in range (0, 4):
-                newCard = Card(rankIndex, suitsIndex, number = 0, temp = 0, image = 0)
-                image = pygame.image.load('cardImages/cards/' + rankList[rankIndex] + suitList[suitsIndex] + '.png')
-                images.append(newCard.cardImage(image))
-
-        return images
     
     def split_list(a_list):
         half = len(a_list)//2
@@ -70,40 +56,52 @@ class CardDeck:
 
 
 def main():
-    newCardDeck = CardDeck.cardDeck()
-    newImageDeck = CardDeck.imageDeck()
-    newPlayingDeck = Card.merge(newCardDeck, newImageDeck)
-    playerWins = 0
-    serverWins = 0
-    count = 0
-    #print(newPlayingDeck)
-    shuffledPlayingDeck = random.sample(newPlayingDeck, len(newPlayingDeck))
+    playDeck = CardDeck.cardDeck()
+    shuffledPlayingDeck = random.sample(playDeck, len(playDeck))
     playerHand, serverHand = CardDeck.split_list(shuffledPlayingDeck)
+    # playerWins = 0
+    # serverWins = 0
+    # count = 0
     print("Player's # of Cards: ", len(playerHand))
     print("Server's # of Cards: ", len(serverHand))
-    
-    for card in range(0, 10):
+    pprint(vars(playerHand[0]))
 
+    # for card in range(0, 25):
+    #     pprint(vars(playerHand[card]))
+   
+
+    for card in range(0, 1):
         print("Player's card is: ", playerHand[card])
         print("Server's card is: ", serverHand[card], "\r\n")
-       
-        
-        playerHand[card]
-        serverHand[card]
-        playerCard = [item[card] for item in playerHand]
-        serverCard = [item[card] for item in serverHand]
-        print('Player Wins: ', playerWins)
-        print('Server Wins: ', serverWins, "\r\n")
-        if(playerCard > serverCard):
-            
-            count += 1
-            playerWins += 1
 
-        if(playerCard < serverCard):
-            
-            count += 1
-            serverWins += 1
+    #     playerCard = [item[0] for item in playerHand]
+    #     print("PLAYERCARD:", playerCard[card])
+    #     serverCard = [item[0] for item in serverHand]
+    #     chars = {'j', 'q', 'k', 'a'}
+    #     playerRank = []
+    #     for char in chars:
+    #         for item in playerCard[card]:
+    #             if not chars:
+    #                 playerRank.append(item)
 
+    #     print('PlayerRANK:', playerRank)
+
+    #     if(playerCard[card] > serverCard[card]):
+            
+    #         count += 1
+    #         playerWins += 1
+
+    #     if(playerCard[card] < serverCard[card]):
+            
+    #         count += 1
+    #         serverWins += 1
+
+    #     if(playerCard[card] == serverCard[card]):
+    #       print("War!")
+          
+
+    #     print('Player Wins: ', playerWins)
+    #     print('Server Wins: ', serverWins, "\r\n")
 
 if __name__ == "__main__":
     main()
@@ -111,6 +109,40 @@ if __name__ == "__main__":
 
 
 
+
+
+
+
+# def imageDeck(cardDeck):
+    #     images = []
+    #     suitList = ["s" , "h", "c", "d"]
+    #     rankList = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "j", "q", "k", "a"]
+    #     for cards in range(0, 51):
+    #             rankIndex = cardDeck.cardRank() 
+    #             suitsIndex = cards.cardSuit()
+    #             newCard = Card(rankIndex, suitsIndex, number = 0, temp = 0, image = None)
+                
+    #             images.append(newCard.cardImage(image))
+
+    #     return images
+
+    # def imageDeck():
+    #     suitList = ["s" , "h", "c", "d"]
+    #     rankList = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "j", "q", "k", "a"]
+    #     images = []
+    #     for rankIndex in range (0, 13):
+    #         for suitsIndex in range (0, 4):
+    #             newCard = Card(rankIndex, suitsIndex, number = 0, temp = 0, image = 0)
+    #             image = pygame.image.load('cardImages/cards/' + rankList[rankIndex] + suitList[suitsIndex] + '.png')
+    #             images.append(newCard.cardImage(image))
+
+    #     return images
+
+
+
+# black = (0,0,0)
+# white = (255,255,255)
+# gray = (192,192,192)
 
 
 # class GUI:
