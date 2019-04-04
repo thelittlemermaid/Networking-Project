@@ -2,7 +2,6 @@ import sys
 import random
 import socket
 import pygame
-from pygame.locals import *
 import random
 from random import shuffle
 import copy
@@ -31,9 +30,11 @@ class Card:
     def getImage(self):
         return self._image
 
-    def merge(list1, list2): 
-        merged_list = tuple(zip(list1, list2))  
-        return merged_list 
+    def getRank(self):
+        return self._rank
+
+    def getSuit(self):
+        return self._suits
 
 class CardDeck:
 
@@ -59,49 +60,55 @@ def main():
     playDeck = CardDeck.cardDeck()
     shuffledPlayingDeck = random.sample(playDeck, len(playDeck))
     playerHand, serverHand = CardDeck.split_list(shuffledPlayingDeck)
-    # playerWins = 0
-    # serverWins = 0
-    # count = 0
+    playerWins = 0
+    serverWins = 0
+    count = 0
+    print("\r\n")
     print("Player's # of Cards: ", len(playerHand))
     print("Server's # of Cards: ", len(serverHand))
-    pprint(vars(playerHand[0]))
+    # pprint(vars(playerHand[0]))
 
     # for card in range(0, 25):
     #     pprint(vars(playerHand[card]))
    
 
-    for card in range(0, 1):
-        print("Player's card is: ", playerHand[card])
-        print("Server's card is: ", serverHand[card], "\r\n")
+    for card in range(0, 10):
+        print("Player's card is: ", playerHand[card].getRank() + " of " + playerHand[card].getSuit())
+        print("Server's card is: ", serverHand[card].getRank() + " of " + serverHand[card].getSuit(), "\r\n")
 
-    #     playerCard = [item[0] for item in playerHand]
-    #     print("PLAYERCARD:", playerCard[card])
-    #     serverCard = [item[0] for item in serverHand]
-    #     chars = {'j', 'q', 'k', 'a'}
-    #     playerRank = []
-    #     for char in chars:
-    #         for item in playerCard[card]:
-    #             if not chars:
-    #                 playerRank.append(item)
-
-    #     print('PlayerRANK:', playerRank)
-
-    #     if(playerCard[card] > serverCard[card]):
+        if(playerHand[card].getRank() > serverHand[card].getRank()):
+            discard = serverHand.pop(card)
+            playerHand.append(discard)
             
-    #         count += 1
-    #         playerWins += 1
+            count += 1
+            playerWins += 1
 
-    #     if(playerCard[card] < serverCard[card]):
+        if(playerHand[card].getRank() < serverHand[card].getRank()):
+            discard = playerHand.pop(card)
+            serverHand.append(discard)
+
+
             
-    #         count += 1
-    #         serverWins += 1
+            count += 1
+            serverWins += 1
 
-    #     if(playerCard[card] == serverCard[card]):
-    #       print("War!")
+        if(playerHand[card].getRank() == serverHand[card].getRank()):
+            print("War!")
+
+            #Can't figure out how to pop three cards at once?
+            # playerDiscard = playerHand.pop(card[:3])
+            # serverDiscard = serverHand.pop(card[:3])
+
+            
+            count += 1
+            serverWins += 1
+
           
-
-    #     print('Player Wins: ', playerWins)
-    #     print('Server Wins: ', serverWins, "\r\n")
+        print("Player's # of Cards: ", len(playerHand))
+        print("Server's # of Cards: ", len(serverHand))
+        print('Player Wins: ', playerWins)
+        print('Server Wins: ', serverWins, "\r\n")
+        
 
 if __name__ == "__main__":
     main()
