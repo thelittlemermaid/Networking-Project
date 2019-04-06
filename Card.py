@@ -7,6 +7,7 @@ from random import shuffle
 import copy
 import pprint
 from pprint import pprint
+import pickle
 
 playerWins = 0
 serverWins = 0
@@ -134,6 +135,18 @@ def main():
     playDeck = CardDeck.cardDeck()
     shuffledPlayingDeck = random.sample(playDeck, len(playDeck))
     playerHand, serverHand = CardDeck.split_list(shuffledPlayingDeck)
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(('127.0.0.1', 8080))
+    s.listen(5)
+    connect, clientAddress = s.accept()
+    
+    
+    for card in len(playerHand):
+        data_string = pickle.dumps(playerHand[card])
+        s.send(data_string)
+    s.close()
+
     gameover = True if (playerWins >= 15) or (serverWins >= 15) or (len(serverHand) == 0) or (len(playerHand) == 0) else False
     try:
         while (not gameover):
@@ -227,27 +240,8 @@ class create_GUI:
 #             connection, clientAddress = socket.accept()
 #             connection.send("Do you want to play?".encode())
 #             response = connection.recv(1024)
-#         if (response == "Yes"):
-#             sendDeck()
+#         if (response.decode() == "Yes"):
 #             #playGame()
-#         elif (response == "No"):
+#         elif (response.decode() == "No"):
 #             sys.exit(-1)
 
-
-#     def sendDeck(shuffledCardDeck, socket):
-#         clientOneCards = shuffledCardDeck[:25]
-#         clientTwoCards = shuffledCardDeck[26:]
-#         connection.send(clientOneCards)
-
-
-# For Main()
-
-
-# serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # serverSocket.bind(("127.0.0.1", 51819))
-    # serverSocket.listen(2)
-    # clientOneSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # clientOneSocket
-    # clientTwoSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # print(shuffledCardDeck)
-    # window = GUI
