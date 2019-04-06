@@ -8,9 +8,9 @@ import copy
 import pprint
 from pprint import pprint
 
-global playerWins
-global serverWins
-global count
+playerWins = 0
+serverWins = 0
+count = 0
 
 class Card:
     def __init__(self, rank, rankValue, suits, image, *args, **kwargs):
@@ -76,6 +76,7 @@ def compareCards(playerHand, serverHand, playerWins, serverWins, count):
     for card in (range(len(playerHand)) or range(len(serverHand))):
         print("Player's card is: ", playerHand[card].getRank() + " of " + playerHand[card].getSuit())
         print("Server's card is: ", serverHand[card].getRank() + " of " + serverHand[card].getSuit(), "\r\n")
+        
 
         if(playerHand[card].getRankValue() > serverHand[card].getRankValue()):
             discard = serverHand.pop(card)
@@ -93,44 +94,53 @@ def compareCards(playerHand, serverHand, playerWins, serverWins, count):
 
         elif(playerHand[card].getRankValue() == serverHand[card].getRankValue()):
             print("War!")
+            count +=1
+            discardPile = []
+            for item in range(0,3):
+                discardPile.append(playerHand.pop(item))
+                discardPile.append(serverHand.pop(item))
+            
+            result = compareLastCard(playerHand[card], serverHand[card])
+            # discardPile.append(playerHand[card])
+            # discardPile.append(serverHand[card])
+            if(result == 1):
+                playerWins += 1
+                for item in discardPile:
+                    playerHand.append(item)
+                    # pprint(vars(item))
+            elif(result == 0):
+                serverWins += 1
+                for item in discardPile:
+                    serverHand.append(item)
+            discardPile.clear()
 
         print("Player's # of Cards: ", len(playerHand))
         print("Server's # of Cards: ", len(serverHand))
+        print("Game count: ", count)
         print('Player Wins: ', playerWins)
         print('Server Wins: ', serverWins, "\r\n")
+        
+        
+def compareLastCard(playerCard, serverCard):
+    player = playerCard.getRankValue()
+    server = serverCard.getRankValue()
 
-def war(playerHand, serverHand, playerWins, serverWins, count):
-    playerWar = []
-    serverWar = []
-
-    for item in range(0,3):
-        playerWar.append(playerHand.pop(item))
-        serverWar.append(serverHand.pop(item))
-    
-    compareCards(playerHand, serverHand, playerWins, serverWins, count)
-
+    if player > server:
+        return 1
+    else:
+        return 0
 
 def main():
-    playerWins = 0
-    serverWins = 0
-    count = 0
     playDeck = CardDeck.cardDeck()
     shuffledPlayingDeck = random.sample(playDeck, len(playDeck))
     playerHand, serverHand = CardDeck.split_list(shuffledPlayingDeck)
+    gameover = True if (playerWins >= 15) or (serverWins >= 15) or (len(serverHand) == 0) or (len(playerHand) == 0) else False
     try:
-        while (count <= 30):
+        while (not gameover):
             compareCards(playerHand, serverHand, playerWins, serverWins, count)
+            #print("Count" , count)
     except IndexError:
-        print("Game Over")
-    
-
-            #Can't figure out how to pop three cards at 
-            # playerDiscard = playerHand.pop(card[:3])
-            # serverDiscard = serverHand.pop(card[:3])
-
-            
-            # count += 1
-            # serverWins += 1
+        print("Count", count)
 
         
 
@@ -176,21 +186,39 @@ if __name__ == "__main__":
 # gray = (192,192,192)
 
 
-# class GUI:
-#     def __init__():
-#         pygame.init()
-#         screen = pygame.display.set_mode((640, 480))
-#         pygame.display.set_caption('War Game')
-#         font = pygame.font.SysFont('arial', 15)
-#         drawTxt = font.render('Draw', 1, black)
-#         restartTxt = font.render('Restart', 1, black)
-#         gameoverTxt = font.render('GAME OVER', 1, white)
-#         background = pygame.Surface(screen.get_size())
-#         background = background.convert()
-#         background.fill((80, 150, 15))
-#         hitB = pygame.draw.rect(background, gray, (10, 445, 75, 25))
-#         standB = pygame.draw.rect(background, gray, (95, 445, 75, 25))
-#         ratioB = pygame.draw.rect(background, gray, (555, 420, 75, 50))
+class create_GUI:
+    def __init__():
+        icon = pygame.image.load('cardImages/icon.png')
+        green = pygame.image.load('cardImages/green.png')
+
+        pygame.init()
+        # load and set the logo
+        logo = pygame.image.load("cardImages/icon_full.png")
+        pygame.display.set_icon(logo)
+        pygame.display.set_caption("War Card Game")
+
+        # create a surface on screen that has the size of 240 x 180
+        screen = pygame.display.set_mode((640,480))
+
+        # define a variable to control the main loop
+        running = True
+
+        # main loop
+        while running:
+            # event handling, gets all event from the event queue
+            for event in pygame.event.get():
+                # only do something if the event is of type QUIT
+                if event.type == pygame.QUIT:
+                    # change the value to False, to exit the main loop
+                    running = False
+
+            screen.blit(green, (0,0))
+            screen.blit(diamondA, (50,50))
+            screen.blit(clubA, (80, 50))
+            screen.blit(clubK, (50, 300))
+            screen.blit(spadeK, (80, 300))
+
+            pygame.display.flip()
 
 # class ClientInteractions:
 #     global connection, clientAddress, response
