@@ -27,6 +27,10 @@ class Card:
         self._cardImage = cardImage
         return cardImage
     
+    def cardRankValue(self, cardRankValue):
+        self._cardRankValue = cardRankValue
+        return cardRankValue
+    
     def getImage(self):
         return self._image
 
@@ -35,6 +39,9 @@ class Card:
 
     def getSuit(self):
         return self._suits
+    
+    def getRankValue(self):
+        return self._rankValue
 
 class CardDeck:
 
@@ -76,14 +83,14 @@ def main():
         print("Player's card is: ", playerHand[card].getRank() + " of " + playerHand[card].getSuit())
         print("Server's card is: ", serverHand[card].getRank() + " of " + serverHand[card].getSuit(), "\r\n")
 
-        if(playerHand[card].getRank() > serverHand[card].getRank()):
+        if(playerHand[card].getRankValue() > serverHand[card].getRankValue()):
             discard = serverHand.pop(card)
             playerHand.append(discard)
             
             count += 1
             playerWins += 1
 
-        if(playerHand[card].getRank() < serverHand[card].getRank()):
+        if(playerHand[card].getRankValue() < serverHand[card].getRankValue()):
             discard = playerHand.pop(card)
             serverHand.append(discard)
 
@@ -92,10 +99,10 @@ def main():
             count += 1
             serverWins += 1
 
-        if(playerHand[card].getRank() == serverHand[card].getRank()):
+        if(playerHand[card].getRankValue() == serverHand[card].getRankValue()):
             print("War!")
 
-            #Can't figure out how to pop three cards at once?
+            #Can't figure out how to pop three cards at 
             # playerDiscard = playerHand.pop(card[:3])
             # serverDiscard = serverHand.pop(card[:3])
 
