@@ -68,6 +68,7 @@ class CardDeck:
         return a_list[:half], a_list[half:]
 
 def compareCards(playerHand, serverHand, playerWins, serverWins, count):
+    winner = ''
     print("\r\n")
     print("Player's # of Cards: ", len(playerHand))
     print("Server's # of Cards: ", len(serverHand))
@@ -78,37 +79,53 @@ def compareCards(playerHand, serverHand, playerWins, serverWins, count):
         print("Server's card is: ", serverHand[0].getRank() + " of " + serverHand[0].getSuit(), "\r\n")
 
         if(playerHand[0].getRankValue() > serverHand[0].getRankValue()):
-            discard = serverHand.pop(serverHand[0])
+            discard = serverHand.pop(0)
             playerHand.append(discard)
             
             count += 1
             playerWins += 1
+            winner = 'player'
 
         elif(playerHand[0].getRankValue() < serverHand[0].getRankValue()):
-            discard = playerHand.pop(playerHand[0])
+            discard = playerHand.pop(0)
             serverHand.append(discard)
             
             count += 1
             serverWins += 1
+            winner = 'server'
 
         elif(playerHand[0].getRankValue() == serverHand[0].getRankValue()):
             print("War!")
+            war(playerHand, serverHand, playerWins, serverWins, count)
 
         print("Player's # of Cards: ", len(playerHand))
         print("Server's # of Cards: ", len(serverHand))
         print('Player Wins: ', playerWins)
         print('Server Wins: ', serverWins, "\r\n")
+        return winner
 
 def war(playerHand, serverHand, playerWins, serverWins, count):
     playerWar = []
     serverWar = []
+    count += 1
 
     for item in range(0,3):
         playerWar.append(playerHand.pop(item))
         serverWar.append(serverHand.pop(item))
     
-    compareCards(playerHand, serverHand, playerWins, serverWins, count)
+    winner = compareCards(playerHand, serverHand, playerWins, serverWins, count)
 
+    if winner == 'player':
+        for card in playerWar:
+            playerHand.append(card)
+        for card in serverHand:
+            playerHand.append(card)
+    else:
+        for card in playerWar:
+            serverHand.append(card)
+        for card in serverHand:
+            serverHand.append(card)
+        
 
 def main():
     playerWins = 0
