@@ -68,64 +68,47 @@ class CardDeck:
         return a_list[:half], a_list[half:]
 
 def compareCards(playerHand, serverHand, playerWins, serverWins, count):
-    winner = ''
     print("\r\n")
     print("Player's # of Cards: ", len(playerHand))
     print("Server's # of Cards: ", len(serverHand))
 
 
     for card in (range(len(playerHand)) or range(len(serverHand))):
-        print("Player's card is: ", playerHand[0].getRank() + " of " + playerHand[0].getSuit())
-        print("Server's card is: ", serverHand[0].getRank() + " of " + serverHand[0].getSuit(), "\r\n")
+        print("Player's card is: ", playerHand[card].getRank() + " of " + playerHand[card].getSuit())
+        print("Server's card is: ", serverHand[card].getRank() + " of " + serverHand[card].getSuit(), "\r\n")
 
-        if(playerHand[0].getRankValue() > serverHand[0].getRankValue()):
-            discard = serverHand.pop(0)
+        if(playerHand[card].getRankValue() > serverHand[card].getRankValue()):
+            discard = serverHand.pop(card)
             playerHand.append(discard)
             
             count += 1
             playerWins += 1
-            winner = 'player'
 
-        elif(playerHand[0].getRankValue() < serverHand[0].getRankValue()):
-            discard = playerHand.pop(0)
+        elif(playerHand[card].getRankValue() < serverHand[card].getRankValue()):
+            discard = playerHand.pop(card)
             serverHand.append(discard)
             
             count += 1
             serverWins += 1
-            winner = 'server'
 
-        elif(playerHand[0].getRankValue() == serverHand[0].getRankValue()):
+        elif(playerHand[card].getRankValue() == serverHand[card].getRankValue()):
             print("War!")
-            war(playerHand, serverHand, playerWins, serverWins, count)
 
         print("Player's # of Cards: ", len(playerHand))
         print("Server's # of Cards: ", len(serverHand))
         print('Player Wins: ', playerWins)
         print('Server Wins: ', serverWins, "\r\n")
-        return winner
 
 def war(playerHand, serverHand, playerWins, serverWins, count):
     playerWar = []
     serverWar = []
-    count += 1
 
     for item in range(0,3):
         playerWar.append(playerHand.pop(item))
         serverWar.append(serverHand.pop(item))
     
-    winner = compareCards(playerHand, serverHand, playerWins, serverWins, count)
+    compareCards(playerHand, serverHand, playerWins, serverWins, count)
 
-    if winner == 'player':
-        for card in playerWar:
-            playerHand.append(card)
-        for card in serverHand:
-            playerHand.append(card)
-    else:
-        for card in playerWar:
-            serverHand.append(card)
-        for card in serverHand:
-            serverHand.append(card)
-        
 
 def main():
     playerWins = 0
