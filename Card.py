@@ -101,9 +101,11 @@ def compareCards(playerHand, serverHand, playerWins, serverWins, count):
                 print("War!")
                 count +=1
                 discardPile = []
+                discardPile.append(playerCard)
+                discardPile.append(serverCard)
                 for item in range(0,3):
-                    discardPile.append(playerHand.pop(item))
-                    discardPile.append(serverHand.pop(item))
+                    discardPile.append(playerHand.pop(0))
+                    discardPile.append(serverHand.pop(0))
 
                 playerLastCard = playerHand.pop(0)
                 serverLastCard = serverHand.pop(0)
@@ -115,11 +117,15 @@ def compareCards(playerHand, serverHand, playerWins, serverWins, count):
                     playerWins += 1
                     for item in discardPile:
                         playerHand.append(item)
+                    playerHand.append(playerLastCard)
+                    playerHand.append(serverLastCard)
                         # pprint(vars(item))
                 elif(result == 0):
                     serverWins += 1
                     for item in discardPile:
                         serverHand.append(item)
+                    serverHand.append(playerLastCard)
+                    serverHand.append(serverLastCard)
                 discardPile.clear()
 
             # print("Player's # of Cards: ", len(playerHand))
@@ -159,7 +165,7 @@ def main():
         compareCards(playerHand, serverHand, playerWins, serverWins, count)
         #print("Count" , count)
     except IndexError:
-        print("Count", count)
+        print("Index Error")
 
         
 
