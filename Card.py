@@ -70,8 +70,8 @@ class CardDeck:
 
 def compareCards(playerHand, serverHand, playerWins, serverWins, count):
 
-    if (count <= 30):
-        for card in (range(len(playerHand)) or range(len(serverHand))):
+    for card in range(30):
+        if(min(len(playerHand), len(serverHand)) > 0):
             print("\r\n")
             print("Player's # of Cards: ", len(playerHand))
             print("Server's # of Cards: ", len(serverHand))
@@ -103,12 +103,14 @@ def compareCards(playerHand, serverHand, playerWins, serverWins, count):
                 discardPile = []
                 discardPile.append(playerCard)
                 discardPile.append(serverCard)
-                for item in range(0,3):
+                for item in range(2):
                     discardPile.append(playerHand.pop(0))
                     discardPile.append(serverHand.pop(0))
 
                 playerLastCard = playerHand.pop(0)
                 serverLastCard = serverHand.pop(0)
+                print("\tPlayer's card is: ", playerLastCard.getRank() + " of " + playerCard.getSuit())
+                print("\tServer's card is: ", serverLastCard.getRank() + " of " + serverCard.getSuit(), "\r\n")
                 
                 result = compareLastCard(playerLastCard, serverLastCard)
                 # discardPile.append(playerHand[card])
