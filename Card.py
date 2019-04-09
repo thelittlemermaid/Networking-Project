@@ -180,38 +180,6 @@ if __name__ == "__main__":
 
 
 
-
-
-
-
-
-# def imageDeck(cardDeck):
-    #     images = []
-    #     suitList = ["s" , "h", "c", "d"]
-    #     rankList = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "j", "q", "k", "a"]
-    #     for cards in range(0, 51):
-    #             rankIndex = cardDeck.cardRank() 
-    #             suitsIndex = cards.cardSuit()
-    #             newCard = Card(rankIndex, suitsIndex, number = 0, temp = 0, image = None)
-                
-    #             images.append(newCard.cardImage(image))
-
-    #     return images
-
-    # def imageDeck():
-    #     suitList = ["s" , "h", "c", "d"]
-    #     rankList = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "j", "q", "k", "a"]
-    #     images = []
-    #     for rankIndex in range (0, 13):
-    #         for suitsIndex in range (0, 4):
-    #             newCard = Card(rankIndex, suitsIndex, number = 0, temp = 0, image = 0)
-    #             image = pygame.image.load('cardImages/cards/' + rankList[rankIndex] + suitList[suitsIndex] + '.png')
-    #             images.append(newCard.cardImage(image))
-
-    #     return images
-
-
-
 # black = (0,0,0)
 # white = (255,255,255)
 # gray = (192,192,192)
