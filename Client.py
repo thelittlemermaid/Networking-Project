@@ -61,14 +61,15 @@ class CardDeck:
 
 def main():
     clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    clientSocket.bind(('127.0.0.1', 8080))
+    clientSocket.bind(('127.0.0.1', 8888))
     clientSocket.listen(2)
-    connect, serverAddress = socket.accept()
-    print("Connected to:", serverAddress)
-    data = connect.recv(1024)
-    hand = pickle.loads(data)
-    print(hand)
-    clientSocket.close()
+    while True:
+        connect, serverAddress = clientSocket.accept()
+        print("Connected to:", serverAddress)
+        data = connect.recv(1024)
+        hand = pickle.loads(data)
+        print(hand)
+        clientSocket.close()
 
 if __name__ == "__main__":
     main()
