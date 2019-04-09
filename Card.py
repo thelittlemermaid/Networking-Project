@@ -68,6 +68,10 @@ class CardDeck:
         half = len(a_list)//2
         return a_list[:half], a_list[half:]
 
+    def saveImages(playerHand):
+        for card in len(playerHand):
+            pygame.image.tostring(card.getImage(), 'RGBX', False)
+
 def compareCards(playerHand, serverHand, playerWins, serverWins, count):
 
     for card in range(30):
