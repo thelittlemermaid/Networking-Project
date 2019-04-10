@@ -64,9 +64,9 @@ def main():
     clientSocket.bind(('127.0.0.1', 8888))
     clientSocket.listen(2)
     while True:
-        connect, serverAddress = clientSocket.accept()
-        print("Connected to:", serverAddress)
-        data = connect.recv(1024)
+        # connect, serverAddress = clientSocket.accept()
+        # print("Connected to:", serverAddress)
+        data = clientSocket.recv(1024)
         hand = pickle.loads(data)
         print(hand)
         clientSocket.close()
