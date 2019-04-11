@@ -75,22 +75,20 @@ def saveImages(playerHand):
         pygame.image.tostring(card.getImage(), 'RGBA', False)
 
 def compareCards(playerHand, serverHand, playerWins, serverWins, count, screen, playerWinTxt, ServerWinTxt, WarTxt):
-    
-    for item in range(30):
-        if (min(len(playerHand), len(serverHand)) > 0):
+    if (count <= 20):
+        for card in (range(len(playerHand)) or range(len(serverHand))):
             print("Player's # of Cards: ", len(playerHand))
             print("Server's # of Cards: ", len(serverHand))
             print("\r\n")
             playerCard = playerHand.pop(0)
             serverCard = serverHand.pop(0)
-            clearScreen(screen)
-            t = Thread(target=displayCards, args=(playerCard, serverCard, screen, playerWinTxt, ServerWinTxt))
+            t = Thread(target=displayCards, args=(playerCard, serverCard, screen, playerWinTxt, ServerWinTxt, WarTxt, discardPile))
             t.start()
             #displayCards(playerCard, serverCard, screen)
             pygame.display.flip()
 
 
-            time.sleep(1.5)
+            time.sleep(2)
             print("Player's card is: ", playerCard.getRank() + " of " + playerCard.getSuit())
             print("Server's card is: ", serverCard.getRank() + " of " + serverCard.getSuit(), "\r\n")
 
@@ -114,18 +112,15 @@ def compareCards(playerHand, serverHand, playerWins, serverWins, count, screen, 
             elif(playerCard.getRankValue() == serverCard.getRankValue()):
                 print("War!")
                 count +=1
-                discardPile = []
                 discardPile.append(playerCard)
                 discardPile.append(serverCard)
-                for item in range(2):
+                for item in range(0,3):
                     discardPile.append(playerHand.pop(0))
                     discardPile.append(serverHand.pop(0))
 
                 playerLastCard = playerHand.pop(0)
                 serverLastCard = serverHand.pop(0)
-                war = Thread(target=displayWar, args=(playerLastCard, serverLastCard, discardPile, screen, WarTxt))
-                war.start()
-                pygame.display.flip()
+
                 result = compareLastCard(playerLastCard, serverLastCard)
                 # discardPile.append(playerHand[card])
                 # discardPile.append(serverHand[card])
@@ -142,14 +137,13 @@ def compareCards(playerHand, serverHand, playerWins, serverWins, count, screen, 
                         serverHand.append(item)
                     serverHand.append(playerLastCard)
                     serverHand.append(serverLastCard)
-                #discardPile.clear()
+                discardPile.clear()
 
             # print("Player's # of Cards: ", len(playerHand))
             # print("Server's # of Cards: ", len(serverHand))
             print("Game count: ", count)
             print('Player Wins: ', playerWins)
             print('Server Wins: ', serverWins, "\r\n")
-            
 
 
 def compareLastCard(playerCard, serverCard):
@@ -162,32 +156,34 @@ def compareLastCard(playerCard, serverCard):
         return 0
 
 
-def displayCards(playerCard, serverCard, screen, playerWinTxt, ServerWinTxt):
+def displayCards(playerCard, serverCard, screen, playerWinTxt, ServerWinTxt, WarTxt, discardPile):
     screen.blit(playerCard.getImage(), (50,80))
     screen.blit(serverCard.getImage(), (50,300))
+    if(playerCard.getRankValue() == serverCard.getRankValue()):
+        screen.blit(discardPile[0], (60, 80))
+
     pygame.display.flip()
 
-def displayWar(playerCard, serverCard, discardPile, screen, WarTxt):
+    if(playerCard.getRankValue() > serverCard.getRankValue()):
+        screen.blit(playerWinTxt, (50, 480))
+        pygame.display.flip()
+    elif(playerCard.getRankValue() < serverCard.getRankValue()):
+        screen.blit(ServerWinTxt, (50, 480))
+        pygame.display.flip()
+    else:
+        screen.blit(WarTxt, (50,480))
+        pygame.display.flip()
 
-    screen.blit(discardPile[0].getImage(), (160, 80))
-    screen.blit(discardPile[2].getImage(), (180, 80))
-    screen.blit(discardPile[4].getImage(), (200,80))
-    screen.blit(playerCard.getImage(), (220,80))
-    screen.blit(discardPile[1].getImage(), (160,300))
-    screen.blit(discardPile[3].getImage(), (180,300))
-    screen.blit(discardPile[5].getImage(), (200,300))
-    screen.blit(serverCard.getImage(), (220,300))
-    pygame.display.flip()
 
-def clearScreen(screen):
-    green = pygame.image.load('cardImages/green.png')
-    screen.blit(green, (0,0))
 def main():
     playDeck = CardDeck.cardDeck()
     shuffledPlayingDeck = random.sample(playDeck, len(playDeck))
     playerHand, serverHand = CardDeck.split_list(shuffledPlayingDeck)
 
     black = (0,0,0)
+    white = (255,255,255)
+    gray = (192,192,192)
+
 
     pygame.init()
     # load and set the logo
@@ -225,9 +221,15 @@ def main():
 
 
 
-        
+        discardPile = []
         compareCards(playerHand, serverHand, playerWins, serverWins, count, screen, playerWinTxt, ServerWinTxt, WarTxt)
-        running = False
+        # try:
+        #     compareCards(playerHand, serverHand, playerWins, serverWins, count, screen)
+        #     #print("Count" , count)
+        # except IndexError:
+        #     print("Index Error")
+
+        # screen.blit(playerHand[0].getImage(), (50, 80))
         pygame.display.flip()
 
 
@@ -261,10 +263,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
- # try:
-        #     compareCards(playerHand, serverHand, playerWins, serverWins, count, screen)
-        #     #print("Count" , count)
-        # except IndexError:
-        #     print("Index Error")
