@@ -83,7 +83,13 @@ def compareCards(playerHand, serverHand, playerWins, serverWins, count, screen, 
             print("\r\n")
             playerCard = playerHand.pop(0)
             serverCard = serverHand.pop(0)
-            clearScreen(screen)
+            scoreBox(screen, ("Player Wins:" + str(playerWins)), playerWins, serverWins, playerHand, serverHand, 400, 325)
+            scoreBox(screen, ("Server Wins:" + str(serverWins)), playerWins, serverWins, playerHand, serverHand, 400, 350)
+
+            scoreBox(screen, ("# of Player Cards:" + str(len(playerHand))), playerWins, serverWins, playerHand, serverHand, 400, 400)
+            scoreBox(screen, ("# of Server Cards:" + str(len(serverHand))), playerWins, serverWins, playerHand, serverHand, 400, 425)
+            # clearScreen(screen)
+            # displayButton(screen, black, "Draw", 500, 240, 100, 100, ic, ac, action=None)
             t = Thread(target=displayCards, args=(playerCard, serverCard, screen, playerWinTxt, ServerWinTxt))
             t.start()
             #displayCards(playerCard, serverCard, screen)
@@ -126,6 +132,7 @@ def compareCards(playerHand, serverHand, playerWins, serverWins, count, screen, 
                 war = Thread(target=displayWar, args=(playerLastCard, serverLastCard, discardPile, screen, WarTxt))
                 war.start()
                 pygame.display.flip()
+                # screen.fill((157, 255, 137))
                 result = compareLastCard(playerLastCard, serverLastCard)
                 # discardPile.append(playerHand[card])
                 # discardPile.append(serverHand[card])
@@ -179,15 +186,45 @@ def displayWar(playerCard, serverCard, discardPile, screen, WarTxt):
     screen.blit(serverCard.getImage(), (220,300))
     pygame.display.flip()
 
-def clearScreen(screen):
-    green = pygame.image.load('cardImages/green.png')
-    screen.blit(green, (0,0))
+def text_objects(text, font, black):
+    textSurface = font.render(text, True, black)
+    return textSurface, textSurface.get_rect()
+
+def displayButton(screen, black, msg,x,y,w,h,ic,ac,action=None):
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+    print(click)
+    if x+w > mouse[0] > x and y+h > mouse[1] > y:
+        pygame.draw.rect(screen, ac,(x,y,w,h))
+
+        if click[0] == 1 and action != None:
+            action()         
+    else:
+        pygame.draw.rect(screen, ic,(x,y,w,h))
+
+    smallText = pygame.font.SysFont("arial",60)
+    textSurf, textRect = text_objects(msg, smallText, black)
+    textRect.center = ( (x+(w/2)), (y+(h/2)) )
+    screen.blit(textSurf, textRect)
+
+def scoreBox(screen, msg, playerWins, serverWins, playerHand, serverHand, x, y):
+    pygame.draw.rect(screen, pygame.Color(169, 169, 169), (x, y, 300, 25))
+    font = pygame.font.SysFont("arial", 15)
+    textSurf, textRect = text_objects(msg, font, pygame.Color(255,255,255))
+    textRect.center = ( (x+(200/2)), (y+(25/2)) )
+    screen.blit(textSurf, textRect)
+
+# def clearScreen(screen):
+#     green = pygame.image.load('cardImages/green.png')
+#     screen.blit(green, (0,0))
 def main():
     playDeck = CardDeck.cardDeck()
     shuffledPlayingDeck = random.sample(playDeck, len(playDeck))
     playerHand, serverHand = CardDeck.split_list(shuffledPlayingDeck)
 
     black = (0,0,0)
+    ic = pygame.Color(201, 25, 65)
+    ac = pygame.Color(23, 54, 125)
 
     pygame.init()
     # load and set the logo
@@ -195,15 +232,16 @@ def main():
     pygame.display.set_icon(logo)
     pygame.display.set_caption("War Card Game")
 
-    # create a surface on screen that has the size of
+    # create a surface on screen that has the size of 640X480
     screen = pygame.display.set_mode((640,480))
-
+    
     icon = pygame.image.load('cardImages/icon.png')
     green = pygame.image.load('cardImages/green.png')
     font = pygame.font.SysFont('arial', 26)
     playerWinTxt = font.render('Player Wins', 1, black)
     ServerWinTxt = font.render("Server Wins", 1, black)
     WarTxt = font.render("WAR!", 1, black)
+    font = pygame.font.SysFont("arial", 15)
     screen.blit(green, (0,0))
     pygame.display.flip()
 
@@ -224,8 +262,17 @@ def main():
                 break # break out of the for loop
 
 
-
-        
+        #displayButton(screen, black, "Draw", 500, 240, 100, 100, ic, ac, action=compareCards)
+        screen.fill((157, 255, 137))
+        displayButton(screen, pygame.Color(0,0,0), "Draw!", 400, 180, 150, 75, ic, ac, action=None)
+        textSurf, textRect = text_objects("Client:", font, pygame.Color(255,255,255))
+        textRect.center = (95, 60)
+        screen.blit(textSurf, textRect)
+        textSurf, textRect2 = text_objects("Server:", font, pygame.Color(255,255,255))
+        textRect2.center = (95, 280)
+        screen.blit(textSurf, textRect2)
+        pygame.display.flip()
+        time.sleep(3)
         compareCards(playerHand, serverHand, playerWins, serverWins, count, screen, playerWinTxt, ServerWinTxt, WarTxt)
         running = False
         pygame.display.flip()
