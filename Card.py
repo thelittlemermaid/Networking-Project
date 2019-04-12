@@ -1,13 +1,10 @@
 import sys
+import os
 import random
 import socket
 import pygame
 import random
 from random import shuffle
-import copy
-import pprint
-from pprint import pprint
-import pickle
 from threading import Thread
 import time
 
@@ -74,8 +71,8 @@ def saveImages(playerHand):
     for card in playerHand:
         pygame.image.tostring(card.getImage(), 'RGBA', False)
 
-def compareCards(playerHand, serverHand, playerWins, serverWins, count, screen, playerWinTxt, ServerWinTxt, WarTxt):
-    
+def compareCards(client_socket, playerHand, serverHand, playerWins, serverWins, count, screen, playerWinTxt, ServerWinTxt, WarTxt):
+
     for item in range(30):
         if (min(len(playerHand), len(serverHand)) > 0):
             print("Player's # of Cards: ", len(playerHand))
@@ -83,6 +80,14 @@ def compareCards(playerHand, serverHand, playerWins, serverWins, count, screen, 
             print("\r\n")
             playerCard = playerHand.pop(0)
             serverCard = serverHand.pop(0)
+            cards = [playerCard.getRankValue(), serverCard.getRankValue()]
+            serverScript = Thread(target = (os.system("python Server.py")))
+            serverScript.start()
+            client_socket.send(str(cards).encode())
+            response = None
+            response = (client_socket.recv(4096)).decode()
+            print(response)
+
             scoreBox(screen, ("Player Wins:" + str(playerWins)), playerWins, serverWins, playerHand, serverHand, 400, 325)
             scoreBox(screen, ("Server Wins:" + str(serverWins)), playerWins, serverWins, playerHand, serverHand, 400, 350)
 
@@ -101,7 +106,7 @@ def compareCards(playerHand, serverHand, playerWins, serverWins, count, screen, 
             print("Server's card is: ", serverCard.getRank() + " of " + serverCard.getSuit(), "\r\n")
 
 
-            if(playerCard.getRankValue() > serverCard.getRankValue()):
+            if(response == "1"):
                 #discard = serverHand.pop(card)
                 playerHand.append(playerCard)
                 playerHand.append(serverCard)
@@ -109,7 +114,7 @@ def compareCards(playerHand, serverHand, playerWins, serverWins, count, screen, 
                 count += 1
                 playerWins += 1
 
-            elif(playerCard.getRankValue() < serverCard.getRankValue()):
+            elif(response == "2"):
                 #discard = playerHand.pop(card)
                 serverHand.append(serverCard)
                 serverHand.append(playerCard)
@@ -117,7 +122,7 @@ def compareCards(playerHand, serverHand, playerWins, serverWins, count, screen, 
                 count += 1
                 serverWins += 1
 
-            elif(playerCard.getRankValue() == serverCard.getRankValue()):
+            elif(response == "3"):
                 print("War!")
                 count +=1
                 discardPile = []
@@ -175,7 +180,6 @@ def displayCards(playerCard, serverCard, screen, playerWinTxt, ServerWinTxt):
     pygame.display.flip()
 
 def displayWar(playerCard, serverCard, discardPile, screen, WarTxt):
-
     screen.blit(discardPile[0].getImage(), (160, 80))
     screen.blit(discardPile[2].getImage(), (180, 80))
     screen.blit(discardPile[4].getImage(), (200,80))
@@ -221,6 +225,8 @@ def main():
     playDeck = CardDeck.cardDeck()
     shuffledPlayingDeck = random.sample(playDeck, len(playDeck))
     playerHand, serverHand = CardDeck.split_list(shuffledPlayingDeck)
+    client_socket = socket.socket()
+    client_socket.connect(('127.0.0.1', 8080))
 
     black = (0,0,0)
     ic = pygame.Color(201, 25, 65)
@@ -273,7 +279,7 @@ def main():
         screen.blit(textSurf, textRect2)
         pygame.display.flip()
         time.sleep(3)
-        compareCards(playerHand, serverHand, playerWins, serverWins, count, screen, playerWinTxt, ServerWinTxt, WarTxt)
+        compareCards(client_socket, playerHand, serverHand, playerWins, serverWins, count, screen, playerWinTxt, ServerWinTxt, WarTxt)
         running = False
         pygame.display.flip()
 
