@@ -73,95 +73,95 @@ def saveImages(playerHand):
 
 def compareCards(client_socket, playerHand, serverHand, playerWins, serverWins, count, screen, playerWinTxt, ServerWinTxt, WarTxt):
 
-    for item in range(30):
-        if (min(len(playerHand), len(serverHand)) > 0):
-            print("Player's # of Cards: ", len(playerHand))
-            print("Server's # of Cards: ", len(serverHand))
-            print("\r\n")
-            playerCard = playerHand.pop(0)
-            serverCard = serverHand.pop(0)
-            cards = [playerCard.getRankValue(), serverCard.getRankValue()]
-            serverScript = Thread(target = (os.system("python Server.py")))
-            serverScript.start()
-            client_socket.send(str(cards).encode())
-            response = None
-            response = (client_socket.recv(4096)).decode()
-            print(response)
+    print("Player's # of Cards: ", len(playerHand))
+    print("Server's # of Cards: ", len(serverHand))
+    print("\r\n")
+    playerCard = playerHand.pop(0)
+    serverCard = serverHand.pop(0)
+    cards = [playerCard.getRankValue(), serverCard.getRankValue()]
+    # serverScript = Thread(target = (os.system("python Server.py")))
+    # serverScript.start()
+    client_socket.send(str(cards).encode())
+    # response = None
+    response = (client_socket.recv(4096)).decode()
+    print(response)
 
-            scoreBox(screen, ("Player Wins:" + str(playerWins)), playerWins, serverWins, playerHand, serverHand, 400, 325)
-            scoreBox(screen, ("Server Wins:" + str(serverWins)), playerWins, serverWins, playerHand, serverHand, 400, 350)
+    scoreBox(screen, ("Player Wins:" + str(playerWins)), playerWins, serverWins, playerHand, serverHand, 400, 325)
+    scoreBox(screen, ("Server Wins:" + str(serverWins)), playerWins, serverWins, playerHand, serverHand, 400, 350)
 
-            scoreBox(screen, ("# of Player Cards:" + str(len(playerHand))), playerWins, serverWins, playerHand, serverHand, 400, 400)
-            scoreBox(screen, ("# of Server Cards:" + str(len(serverHand))), playerWins, serverWins, playerHand, serverHand, 400, 425)
-            # clearScreen(screen)
-            # displayButton(screen, black, "Draw", 500, 240, 100, 100, ic, ac, action=None)
-            t = Thread(target=displayCards, args=(playerCard, serverCard, screen, playerWinTxt, ServerWinTxt))
-            t.start()
-            #displayCards(playerCard, serverCard, screen)
-            pygame.display.flip()
+    scoreBox(screen, ("# of Player Cards:" + str(len(playerHand))), playerWins, serverWins, playerHand, serverHand, 400, 400)
+    scoreBox(screen, ("# of Server Cards:" + str(len(serverHand))), playerWins, serverWins, playerHand, serverHand, 400, 425)
+    # clearScreen(screen)
+    # displayButton(screen, black, "Draw", 500, 240, 100, 100, ic, ac, action=None)
+    t = Thread(target=displayCards, args=(playerCard, serverCard, screen, playerWinTxt, ServerWinTxt))
+    t.start()
+    #displayCards(playerCard, serverCard, screen)
+    pygame.display.flip()
 
 
-            time.sleep(1.5)
-            print("Player's card is: ", playerCard.getRank() + " of " + playerCard.getSuit())
-            print("Server's card is: ", serverCard.getRank() + " of " + serverCard.getSuit(), "\r\n")
+    time.sleep(1.5)
+    print("Player's card is: ", playerCard.getRank() + " of " + playerCard.getSuit())
+    print("Server's card is: ", serverCard.getRank() + " of " + serverCard.getSuit(), "\r\n")
 
 
-            if(response == "1"):
-                #discard = serverHand.pop(card)
-                playerHand.append(playerCard)
-                playerHand.append(serverCard)
+    if(response == "1"):
+        #discard = serverHand.pop(card)
+        playerHand.append(playerCard)
+        playerHand.append(serverCard)
 
-                count += 1
-                playerWins += 1
+        count += 1
+        playerWins += 1
 
-            elif(response == "2"):
-                #discard = playerHand.pop(card)
-                serverHand.append(serverCard)
-                serverHand.append(playerCard)
+    elif(response == "2"):
+        #discard = playerHand.pop(card)
+        serverHand.append(serverCard)
+        serverHand.append(playerCard)
 
-                count += 1
-                serverWins += 1
+        count += 1
+        serverWins += 1
 
-            elif(response == "3"):
-                print("War!")
-                count +=1
-                discardPile = []
-                discardPile.append(playerCard)
-                discardPile.append(serverCard)
-                for item in range(2):
-                    discardPile.append(playerHand.pop(0))
-                    discardPile.append(serverHand.pop(0))
+    elif(response == "3"):
+        print("War!")
+        count +=1
+        discardPile = []
+        discardPile.append(playerCard)
+        discardPile.append(serverCard)
+        for item in range(2):
+            discardPile.append(playerHand.pop(0))
+            discardPile.append(serverHand.pop(0))
 
-                playerLastCard = playerHand.pop(0)
-                serverLastCard = serverHand.pop(0)
-                war = Thread(target=displayWar, args=(playerLastCard, serverLastCard, discardPile, screen, WarTxt))
-                war.start()
-                pygame.display.flip()
-                # screen.fill((157, 255, 137))
-                result = compareLastCard(playerLastCard, serverLastCard)
-                # discardPile.append(playerHand[card])
-                # discardPile.append(serverHand[card])
-                if(result == 1):
-                    playerWins += 1
-                    for item in discardPile:
-                        playerHand.append(item)
-                    playerHand.append(playerLastCard)
-                    playerHand.append(serverLastCard)
-                        # pprint(vars(item))
-                elif(result == 0):
-                    serverWins += 1
-                    for item in discardPile:
-                        serverHand.append(item)
-                    serverHand.append(playerLastCard)
-                    serverHand.append(serverLastCard)
-                #discardPile.clear()
+        playerLastCard = playerHand.pop(0)
+        serverLastCard = serverHand.pop(0)
+        warCards = [playerLastCard.getRankValue(), serverLastCard.getRankValue()]
+        war = Thread(target=displayWar, args=(playerLastCard, serverLastCard, discardPile, screen, WarTxt))
+        war.start()
+        pygame.display.flip()
+        # screen.fill((157, 255, 137))
+        client_socket.send(str(warCards).encode())
+        result = (client_socket.recv(4096)).decode()
+        # discardPile.append(playerHand[card])
+        # discardPile.append(serverHand[card])
+        if(result == 1):
+            playerWins += 1
+            for item in discardPile:
+                playerHand.append(item)
+            playerHand.append(playerLastCard)
+            playerHand.append(serverLastCard)
+                # pprint(vars(item))
+        elif(result == 2):
+            serverWins += 1
+            for item in discardPile:
+                serverHand.append(item)
+            serverHand.append(playerLastCard)
+            serverHand.append(serverLastCard)
+        #discardPile.clear()
 
-            # print("Player's # of Cards: ", len(playerHand))
-            # print("Server's # of Cards: ", len(serverHand))
-            print("Game count: ", count)
-            print('Player Wins: ', playerWins)
-            print('Server Wins: ', serverWins, "\r\n")
-            
+    # print("Player's # of Cards: ", len(playerHand))
+    # print("Server's # of Cards: ", len(serverHand))
+    print("Game count: ", count)
+    print('Player Wins: ', playerWins)
+    print('Server Wins: ', serverWins, "\r\n")
+    
 
 
 def compareLastCard(playerCard, serverCard):
@@ -194,15 +194,15 @@ def text_objects(text, font, black):
     textSurface = font.render(text, True, black)
     return textSurface, textSurface.get_rect()
 
-def displayButton(screen, black, msg,x,y,w,h,ic,ac,action=None):
+def displayButton(screen, black, msg,x,y,w,h,ic,ac, client_socket, playerHand, serverHand, playerWins, serverWins, count, playerWinTxt, ServerWinTxt, WarTxt):
+    pygame.event.get()
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
-    print(click)
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
         pygame.draw.rect(screen, ac,(x,y,w,h))
 
-        if click[0] == 1 and action != None:
-            action()         
+        if click[0] == 1 and x+w > mouse[0] > x and y+h > mouse[1] > y:
+            compareCards(client_socket, playerHand, serverHand, playerWins, serverWins, count, screen, playerWinTxt, ServerWinTxt, WarTxt)         
     else:
         pygame.draw.rect(screen, ic,(x,y,w,h))
 
@@ -251,6 +251,8 @@ def main():
     screen.blit(green, (0,0))
     pygame.display.flip()
 
+    print(pygame.event.get())
+
     # define a variable to control the main loop
     running = True
 
@@ -267,21 +269,22 @@ def main():
                 running = False
                 break # break out of the for loop
 
-
-        #displayButton(screen, black, "Draw", 500, 240, 100, 100, ic, ac, action=compareCards)
-        screen.fill((157, 255, 137))
-        displayButton(screen, pygame.Color(0,0,0), "Draw!", 400, 180, 150, 75, ic, ac, action=None)
-        textSurf, textRect = text_objects("Client:", font, pygame.Color(255,255,255))
-        textRect.center = (95, 60)
-        screen.blit(textSurf, textRect)
-        textSurf, textRect2 = text_objects("Server:", font, pygame.Color(255,255,255))
-        textRect2.center = (95, 280)
-        screen.blit(textSurf, textRect2)
-        pygame.display.flip()
-        time.sleep(3)
-        compareCards(client_socket, playerHand, serverHand, playerWins, serverWins, count, screen, playerWinTxt, ServerWinTxt, WarTxt)
-        running = False
-        pygame.display.flip()
+        for item in range(30):
+            if (min(len(playerHand), len(serverHand)) > 0):
+                #displayButton(screen, black, "Draw", 500, 240, 100, 100, ic, ac, action=compareCards)
+                screen.fill((157, 255, 137))
+                displayButton(screen, pygame.Color(0,0,0), "Draw!", 400, 180, 150, 75, ic, ac,client_socket, playerHand, serverHand, playerWins, serverWins, count, playerWinTxt, ServerWinTxt, WarTxt)
+                textSurf, textRect = text_objects("Client:", font, pygame.Color(0,0,0))
+                textRect.center = (95, 60)
+                screen.blit(textSurf, textRect)
+                textSurf, textRect2 = text_objects("Server:", font, pygame.Color(0,0,0))
+                textRect2.center = (95, 280)
+                screen.blit(textSurf, textRect2)
+                pygame.display.flip()
+                time.sleep(3)
+                # compareCards(client_socket, playerHand, serverHand, playerWins, serverWins, count, screen, playerWinTxt, ServerWinTxt, WarTxt)
+                running = False
+                pygame.display.flip()
 
 
 
