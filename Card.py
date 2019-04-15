@@ -67,10 +67,6 @@ class CardDeck:
         half = len(a_list)//2
         return a_list[:half], a_list[half:]
 
-def saveImages(playerHand):
-    for card in playerHand:
-        pygame.image.tostring(card.getImage(), 'RGBA', False)
-
 def compareCards(client_socket, playerHand, serverHand, playerWins, serverWins, count, screen, playerWinTxt, ServerWinTxt, WarTxt):
 
     print("Player's # of Cards: ", len(playerHand))
@@ -82,6 +78,7 @@ def compareCards(client_socket, playerHand, serverHand, playerWins, serverWins, 
     # serverScript = Thread(target = (os.system("python Server.py")))
     # serverScript.start()
     client_socket.send(str(cards).encode())
+    print("Under send")
     # response = None
     response = (client_socket.recv(4096)).decode()
     print(response)
@@ -164,16 +161,6 @@ def compareCards(client_socket, playerHand, serverHand, playerWins, serverWins, 
     
 
 
-def compareLastCard(playerCard, serverCard):
-    player = playerCard.getRankValue()
-    server = serverCard.getRankValue()
-
-    if player > server:
-        return 1
-    else:
-        return 0
-
-
 def displayCards(playerCard, serverCard, screen, playerWinTxt, ServerWinTxt):
     screen.blit(playerCard.getImage(), (50,80))
     screen.blit(serverCard.getImage(), (50,300))
@@ -198,10 +185,11 @@ def displayButton(screen, black, msg,x,y,w,h,ic,ac, client_socket, playerHand, s
     pygame.event.get()
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
+    print(click)
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
         pygame.draw.rect(screen, ac,(x,y,w,h))
 
-        if click[0] == 1 and x+w > mouse[0] > x and y+h > mouse[1] > y:
+        if pygame.MOUSEBUTTONDOWN and x+w > mouse[0] > x and y+h > mouse[1] > y:
             compareCards(client_socket, playerHand, serverHand, playerWins, serverWins, count, screen, playerWinTxt, ServerWinTxt, WarTxt)         
     else:
         pygame.draw.rect(screen, ic,(x,y,w,h))
@@ -218,9 +206,7 @@ def scoreBox(screen, msg, playerWins, serverWins, playerHand, serverHand, x, y):
     textRect.center = ( (x+(200/2)), (y+(25/2)) )
     screen.blit(textSurf, textRect)
 
-# def clearScreen(screen):
-#     green = pygame.image.load('cardImages/green.png')
-#     screen.blit(green, (0,0))
+
 def main():
     playDeck = CardDeck.cardDeck()
     shuffledPlayingDeck = random.sample(playDeck, len(playDeck))
@@ -287,40 +273,5 @@ def main():
                 pygame.display.flip()
 
 
-
-
-
-
-    # sockServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # sockServer.bind(('127.0.0.1', 8080))
-    # print("Listening..")
-    # sockServer.listen(5)
-    # while True:
-    #
-    #     #Establish connection with client
-    #     sockConnect, sockAddr = sockServer.accept()
-    #     print('Connection made: ', sockAddr)
-    #     print(sockConnect.recv(1024))
-    #     saveImages(playerHand)
-    #     for card in range(26):
-    #         data_string = pickle.dumps(playerHand[card])
-    #         sockConnect.send(data_string.encode())
-    #
-    #     #Close the socket connection
-    #     sockConnect.close()
-
-
-    #gameover = True if (playerWins >= 15) or (serverWins >= 15) or (len(serverHand) == 0) or (len(playerHand) == 0) else False
-
-
-
-
 if __name__ == "__main__":
     main()
-
-
- # try:
-        #     compareCards(playerHand, serverHand, playerWins, serverWins, count, screen)
-        #     #print("Count" , count)
-        # except IndexError:
-        #     print("Index Error")
