@@ -240,28 +240,29 @@ def main():
 
     # main loop
     while running:
-        # event handling, gets all event from the event queue
-        for event in pygame.event.get():
-            # only do something if the event is of type QUIT
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    running = False
-                    break # break out of the for loop
-            elif event.type == pygame.QUIT:
-                running = False
-                pygame.quit()
-                sys.exit()
-                break # break out of the for loop
-
 
         for item in range(30):
             if (min(len(playerHand), len(serverHand)) > 0):
+                 # event handling, gets all event from the event queue
+                 for event in pygame.event.get():
+                    # only do something if the event is of type QUIT
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_ESCAPE:
+                            running = False
+                            break # break out of the for loop
+                    elif event.type == pygame.QUIT:
+                        running = False
+                        pygame.quit()
+                        sys.exit()
+                        break # break out of the for loop
+
                 #displayButton(screen, black, "Draw", 500, 240, 100, 100, ic, ac, action=compareCards)
-                screen.fill((157, 255, 137))
-                displayButton(screen, pygame.Color(0,0,0), "Draw!", 400, 180, 150, 75, ic, ac,client_socket, playerHand, serverHand, playerWins, serverWins, item, playerWinTxt, ServerWinTxt, WarTxt)
-                time.sleep(3)
-                # compareCards(client_socket, playerHand, serverHand, playerWins, serverWins, count, screen, playerWinTxt, ServerWinTxt, WarTxt)
-                pygame.display.flip()
+            screen.fill((157, 255, 137))
+            displayButton(screen, pygame.Color(0,0,0), "Draw!", 400, 180, 150, 75, ic, ac,client_socket, playerHand, serverHand, playerWins, serverWins, item, playerWinTxt, ServerWinTxt, WarTxt)
+            time.sleep(2)
+            #compareCards(client_socket, playerHand, serverHand, playerWins, serverWins, count, screen, playerWinTxt, ServerWinTxt, WarTxt)
+            pygame.display.flip()
+
         running = False
         pygame.quit()
 
