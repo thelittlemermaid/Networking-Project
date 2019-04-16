@@ -25,7 +25,7 @@ import ast
 response = 0
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 #Enter IP for current machine
-server_socket.bind(('', 8081))
+server_socket.bind(('127.0.0.1', 8080))
 server_socket.listen(5)
 conn, address = server_socket.accept()
 
