@@ -138,6 +138,23 @@ def compareCards(client_socket, playerHand, serverHand, screen):
                 serverHand.append(item)
             serverHand.append(playerLastCard)
             serverHand.append(serverLastCard)
+        elif(result == "3"):
+            print("War!")
+            discardPile = []
+            discardPile.append(playerCard)
+            discardPile.append(serverCard)
+            for item in range(2):
+                discardPile.append(playerHand.pop(0))
+                discardPile.append(serverHand.pop(0))
+
+            playerLastCard = playerHand.pop(0)
+            serverLastCard = serverHand.pop(0)
+            warCards = [playerLastCard.getRankValue(), serverLastCard.getRankValue()]
+            war = Thread(target=displayWar, args=(playerLastCard, serverLastCard, discardPile, screen))
+            war.start()
+            pygame.display.flip()
+            client_socket.send(str(warCards).encode())
+            result = (client_socket.recv(4096)).decode()
 
     scoreBox(screen, ("Player Wins:" + str(playerWins)), playerWins, serverWins, playerHand, serverHand, 400, 325)
     scoreBox(screen, ("Server Wins:" + str(serverWins)), playerWins, serverWins, playerHand, serverHand, 400, 350)
