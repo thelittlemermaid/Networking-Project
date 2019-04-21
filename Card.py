@@ -11,7 +11,6 @@ import time
 playerWins = 0
 serverWins = 0
 count = 0
-clickedFlag = False
 
 class Card:
     def __init__(self, rank, rankValue, suits, image, *args, **kwargs):
@@ -88,14 +87,6 @@ def compareCards(client_socket, playerHand, serverHand, screen):
     client_socket.send(str(cards).encode())
     response = (client_socket.recv(4096)).decode()
 
-    textSurf, textRect = text_objects("Client:", font, pygame.Color(0,0,0))
-    textRect.center = (95, 60)
-    screen.blit(textSurf, textRect)
-    textSurf, textRect2 = text_objects("Server:", font, pygame.Color(0,0,0))
-    textRect2.center = (95, 280)
-    screen.blit(textSurf, textRect2)
-
-    pygame.display.flip()
 
     t = Thread(target=displayCards, args=(playerCard, serverCard, screen))
     t.start()
@@ -158,10 +149,9 @@ def compareCards(client_socket, playerHand, serverHand, screen):
 
 
 def displayCards(playerCard, serverCard, screen):
-    while clickedFlag == True:
-        screen.blit(playerCard.getImage(), (50,80))
-        screen.blit(serverCard.getImage(), (50,300))
-        pygame.display.flip()
+    screen.blit(playerCard.getImage(), (50,80))
+    screen.blit(serverCard.getImage(), (50,300))
+    pygame.display.flip()
 
 def displayWar(playerCard, serverCard, discardPile, screen):
     screen.blit(discardPile[0].getImage(), (160, 80))
@@ -179,7 +169,6 @@ def text_objects(text, font, black):
     return textSurface, textSurface.get_rect()
 
 def displayButton(screen, black, msg,x,y,w,h,ic,ac, client_socket, playerHand, serverHand):
-    global clickedFlag
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
     print(click)
@@ -187,11 +176,9 @@ def displayButton(screen, black, msg,x,y,w,h,ic,ac, client_socket, playerHand, s
         pygame.draw.rect(screen, ac,(x,y,w,h))
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
-            clickedFlag = True
             compareCards(client_socket, playerHand, serverHand, screen)         
     else:
         pygame.draw.rect(screen, ic,(x,y,w,h))
-        clickedFlag = False
 
     smallText = pygame.font.SysFont("arial",60)
     textSurf, textRect = text_objects(msg, smallText, black)
@@ -256,8 +243,17 @@ def main():
             if (min(len(playerHand), len(serverHand)) > 0):
                 screen.fill((157, 255, 137))
                 displayButton(screen, pygame.Color(0,0,0), "Draw!", 400, 180, 150, 75, ic, ac,client_socket, playerHand, serverHand)
-                time.sleep(3)
+                textSurf, textRect = text_objects("Client:", font, pygame.Color(0,0,0))
+                textRect.center = (95, 60)
+                screen.blit(textSurf, textRect)
+                textSurf, textRect2 = text_objects("Server:", font, pygame.Color(0,0,0))
+                textRect2.center = (95, 280)
+                screen.blit(textSurf, textRect2)
                 pygame.display.flip()
+                time.sleep(1.5)
+                pygame.display.flip()
+                if event.type != pygame.MOUSEBUTTONDOWN:
+                    pygame.event.wait()
         screen.fill((157, 255, 137))
         if playerWins > serverWins:
             textSurf, textRect = text_objects('Player Wins', largeFont, black)
