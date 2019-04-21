@@ -202,6 +202,13 @@ def displayButton(screen, black, msg,x,y,w,h,ic,ac, client_socket, playerHand, s
     textRect.center = ( (x+(w/2)), (y+(h/2)) )
     screen.blit(textSurf, textRect)
 
+def startButton(screen):
+    pygame.draw.rect(screen, pygame.Color(0, 255, 0), (400, 180, 150, 75))
+    smallText = pygame.font.SysFont("arial",60)
+    textSurf, textRect = text_objects('Play', smallText, pygame.Color(0,0,0))
+    textRect.center = ( (400+(150/2)), (180+(75/2)) )
+    screen.blit(textSurf, textRect)
+
 def scoreBox(screen, msg, playerWins, serverWins, playerHand, serverHand, x, y):
     pygame.draw.rect(screen, pygame.Color(169, 169, 169), (x, y, 300, 25))
     font = pygame.font.SysFont("arial", 15)
@@ -209,6 +216,38 @@ def scoreBox(screen, msg, playerWins, serverWins, playerHand, serverHand, x, y):
     textRect.center = ( (x+(200/2)), (y+(25/2)) )
     screen.blit(textSurf, textRect)
 
+def gameLoop(playerHand, serverHand, screen, ic, ac, client_socket, font, largeFont, black):
+    global count
+    global serverWins
+    global playerWins
+    while count <= 30:
+        if (min(len(playerHand), len(serverHand)) > 0):
+            screen.fill((157, 255, 137))
+            displayButton(screen, pygame.Color(0,0,0), "Draw!", 400, 180, 150, 75, ic, ac,client_socket, playerHand, serverHand)
+            textSurf, textRect = text_objects("Client:", font, black)
+            textRect.center = (95, 60)
+            screen.blit(textSurf, textRect)
+            textSurf, textRect2 = text_objects("Server:", font, black)
+            textRect2.center = (95, 280)
+            screen.blit(textSurf, textRect2)
+            pygame.display.flip()
+            time.sleep(5)
+    screen.fill((157, 255, 137))
+    if playerWins > serverWins:
+        textSurf, textRect = text_objects('Player Wins', largeFont, black)
+        textRect.center = ( (250+(150/2)), (200+(100/2)) )
+        screen.blit(textSurf, textRect)
+    elif serverWins > playerWins:
+        textSurf, textRect = text_objects('Server Wins', largeFont, black)
+        textRect.center = ( (250+(150/2)), (200+(100/2)) )
+        screen.blit(textSurf, textRect)
+    elif serverWins == playerWins:
+        textSurf, textRect = text_objects('TIE!', largeFont, black)
+        textRect.center = ( (250+(150/2)), (200+(100/2)) )
+        screen.blit(textSurf, textRect)
+    pygame.display.flip()
+    time.sleep(5)
+    running = False
 
 def main():
     playDeck = CardDeck.cardDeck()
@@ -235,56 +274,26 @@ def main():
     largeFont = pygame.font.SysFont('arial', 75)
     font = pygame.font.SysFont("arial", 15)
     screen.blit(green, (0,0))
-    pygame.display.flip()
 
     # define a variable to control the main loop
     running = True
+    startButton(screen)
+    pygame.display.flip()
 
     # main loop
     while running:
         # event handling, gets all event from the event queue
         for event in pygame.event.get():
             # only do something if the event is of type QUIT
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    running = False
-                    break # break out of the for loop
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:#550 > pygame.mouse.get_pos()[0] > 400 and 255 > pygame.mouse.get_pos()[0] > 180:
+                gameLoop(playerHand, serverHand, screen, ic, ac, client_socket, font, largeFont, black)
+                # game = Thread(target = gameLoop, args = (playerHand, serverHand, screen, ic, ac, client_socket, font, largeFont, black))
+                # game.start()
             elif event.type == pygame.QUIT:
                 running = False
                 pygame.quit()
                 sys.exit()
                 break # break out of the for loop
-
-
-        while count <= 30:
-            if (min(len(playerHand), len(serverHand)) > 0):
-                screen.fill((157, 255, 137))
-                displayButton(screen, pygame.Color(0,0,0), "Draw!", 400, 180, 150, 75, ic, ac,client_socket, playerHand, serverHand)
-                textSurf, textRect = text_objects("Client:", font, pygame.Color(0,0,0))
-                textRect.center = (95, 60)
-                screen.blit(textSurf, textRect)
-                textSurf, textRect2 = text_objects("Server:", font, pygame.Color(0,0,0))
-                textRect2.center = (95, 280)
-                screen.blit(textSurf, textRect2)
-                pygame.display.flip()
-                time.sleep(1.5)
-                pygame.display.flip()
-                if event.type != pygame.MOUSEBUTTONDOWN:
-                    pygame.event.wait()
-        screen.fill((157, 255, 137))
-        if playerWins > serverWins:
-            textSurf, textRect = text_objects('Player Wins', largeFont, black)
-            textRect.center = ( (250+(150/2)), (200+(100/2)) )
-            screen.blit(textSurf, textRect)
-            pygame.display.flip()
-        elif serverWins > playerWins:
-            textSurf, textRect = text_objects('Server Wins', largeFont, black)
-            textRect.center = ( (250+(150/2)), (200+(100/2)) )
-            screen.blit(textSurf, textRect)
-            pygame.display.flip()
-        time.sleep(5)
-        running = False
-        pygame.quit()
 
 
 if __name__ == "__main__":
