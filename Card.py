@@ -192,6 +192,9 @@ def displayButton(screen, black, msg,x,y,w,h,ic,ac, client_socket, playerHand, s
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
         pygame.draw.rect(screen, ac,(x,y,w,h))
     for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+            pygame.quit()
         if event.type == pygame.MOUSEBUTTONDOWN:
             compareCards(client_socket, playerHand, serverHand, screen)         
     else:
