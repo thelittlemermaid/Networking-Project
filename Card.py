@@ -182,7 +182,7 @@ def text_objects(text, font, black):
 
 def displayButton(screen, black, msg,x,y,w,h,ic,ac, client_socket, playerHand, serverHand):
     mouse = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
+
 
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
         pygame.draw.rect(screen, ac,(x,y,w,h))
@@ -220,7 +220,7 @@ def gameLoop(playerHand, serverHand, screen, ic, ac, client_socket, font, largeF
     global count
     global serverWins
     global playerWins
-    while count <= 30:
+    while count < 30:
         if (min(len(playerHand), len(serverHand)) > 0):
             screen.fill((157, 255, 137))
             displayButton(screen, pygame.Color(0,0,0), "Draw!", 400, 180, 150, 75, ic, ac,client_socket, playerHand, serverHand)
