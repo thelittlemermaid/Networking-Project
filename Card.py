@@ -249,21 +249,21 @@ def text_objects(text, font, black):
 #   This creates our "Draw!" button
 
 def displayButton(screen, black, msg,x,y,w,h,ic,ac, client_socket, playerHand, serverHand):
-    #   Uses the pygame event collector to collect metrics regarding the user's mouse position on the GUI screen.
+#   Uses the pygame event collector to collect metrics regarding the user's mouse position on the GUI screen.
     mouse = pygame.mouse.get_pos()
 
-    #   If the user's mouse is within the boundaries of the box drawn, the color of the box changes.
+#   If the user's mouse is within the boundaries of the box drawn, the color of the box changes.
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
         pygame.draw.rect(screen, ac,(x,y,w,h))
-    #   Checks the event collecter to respond when the user interacts with the GUI.
+#   Checks the event collecter to respond when the user interacts with the GUI.
     for event in pygame.event.get():
-        #   If the user clicks the "x", the game closes.
+#   If the user clicks the "x", the game closes.
         if event.type == pygame.QUIT:
             sys.exit()
-        #   If the user clicks the "Draw!" button, the compareCards method on line 67 is called.
+#   If the user clicks the "Draw!" button, the compareCards method on line 67 is called.
         if event.type == pygame.MOUSEBUTTONDOWN:
             compareCards(client_socket, playerHand, serverHand, screen)         
-    #   Otherwise, if none of the above conditions are met, the normal button is drawn.
+#   Otherwise, if none of the above conditions are met, the normal button is drawn.
     else:
         pygame.draw.rect(screen, ic,(x,y,w,h))
 
@@ -348,6 +348,8 @@ def gameLoop(playerHand, serverHand, screen, ic, ac, client_socket, font, largeF
 #   will allow the game to be stopped until the user decides to run both scripts again. 
 
 def main():
+#   Assigns IP from user input in the terminal
+    ipAddress = sys.argv[1]
 #   Main deck is created
     playDeck = CardDeck.cardDeck()
 #   Shuffling main deck
@@ -357,7 +359,7 @@ def main():
 #   Creating Client Socket
     client_socket = socket.socket()
 #   Assigning Client Socket an IP and Port
-    client_socket.connect(('127.0.0.1', 8080))
+    client_socket.connect((ipAddress, 8080))
 
     black = (0,0,0)
     ic = pygame.Color(201, 25, 65)
@@ -402,4 +404,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) < 2:
+        print("Please use the command: python Card.py [server IP Address] to run this script.")
+    else:
+        main()
