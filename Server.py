@@ -1,6 +1,6 @@
 """
 War Card Game Server by: Ariel Inman & Alex Franklin
-Because Suits do not matter in War, we are only caring about the value of each card
+Because Suits do not matter in War, we only care about the value of each card
 In the client we assign each card a RankValue from 0-12. (2-A).
 Here is the list of how the RankValues correspond to each card:
 2 - 0
@@ -33,7 +33,7 @@ try:
     while True:
         # Prints once connection is made and Server recieves first card
         print("Server Listeningngngngng")
-        # The Values are a list from the array of the two cards that are sent
+        # The values are a list from the array of the two cards that are sent
         values = conn.recv(8192).decode()
         # Converted from a string, back to a list
         convertedValues = ast.literal_eval(values)
@@ -49,6 +49,7 @@ try:
         print("Player:", playerValue)
         print("Server:", serverValue)
 
+        # Compares the card rank values to determine the winner.
         if playerValue > serverValue:
             response = 1
         elif playerValue < serverValue:

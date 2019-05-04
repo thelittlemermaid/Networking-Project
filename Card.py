@@ -87,7 +87,7 @@ def compareCards(client_socket, playerHand, serverHand, screen):
     playerCard = playerHand.pop(0)
     serverCard = serverHand.pop(0)
 
-#   Thread to Start our Display Cards Method, skip to line ... to see this method 
+#   Thread to Start our Display Cards Method, skip to line 223 to see this method 
     t = Thread(target=displayCards, args=(playerCard, serverCard, screen))
     t.start()
     pygame.display.flip()
@@ -116,7 +116,7 @@ def compareCards(client_socket, playerHand, serverHand, screen):
 
         playerWins += 1
 
-#   Server Wins
+    # Server Wins
     elif response == "2":
         serverHand.append(serverCard)
         serverHand.append(playerCard)
@@ -124,7 +124,7 @@ def compareCards(client_socket, playerHand, serverHand, screen):
         serverWins += 1
 
 
-#   War
+    # War
     elif response == "3":
         print("War!")
 #   Discard Pile is for the cards from the Client and Server to be placed in.
@@ -240,24 +240,30 @@ def displayWar(playerCard, serverCard, discardPile, screen):
     screen.blit(serverCard.getImage(), (220,300))
     pygame.display.flip()
 
-#   ****************Might need Ariel to Explain***********
+#   This method generates the text that will be displayed on our GUI screen
 
 def text_objects(text, font, black):
     textSurface = font.render(text, True, black)
     return textSurface, textSurface.get_rect()
 
+#   This creates our "Draw!" button
 
 def displayButton(screen, black, msg,x,y,w,h,ic,ac, client_socket, playerHand, serverHand):
+    #   Uses the pygame event collector to collect metrics regarding the user's mouse position on the GUI screen.
     mouse = pygame.mouse.get_pos()
 
-
+    #   If the user's mouse is within the boundaries of the box drawn, the color of the box changes.
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
         pygame.draw.rect(screen, ac,(x,y,w,h))
+    #   Checks the event collecter to respond when the user interacts with the GUI.
     for event in pygame.event.get():
+        #   If the user clicks the "x", the game closes.
         if event.type == pygame.QUIT:
             sys.exit()
+        #   If the user clicks the "Draw!" button, the compareCards method on line 67 is called.
         if event.type == pygame.MOUSEBUTTONDOWN:
             compareCards(client_socket, playerHand, serverHand, screen)         
+    #   Otherwise, if none of the above conditions are met, the normal button is drawn.
     else:
         pygame.draw.rect(screen, ic,(x,y,w,h))
 
@@ -291,6 +297,8 @@ def scoreBox(screen, msg, x, y):
 
 
 #   This is our main game loop.
+#   This method calls all of the necessary methods for a round to be played.
+#   At the end of a game, this method will also determine the winner (based on number of cards held) and display it to the screen.
 
 
 def gameLoop(playerHand, serverHand, screen, ic, ac, client_socket, font, largeFont, black):
@@ -357,13 +365,13 @@ def main():
 
 #   Initalizing the screen
     pygame.init()
-    # load and set the logo
+#   Load and set the logo
     logo = pygame.image.load("cardImages/icon_full.png")
     pygame.display.set_icon(logo)
 #   Set Window Caption
     pygame.display.set_caption("War Card Game")
 
-    # create a surface on screen that has the size of 640X480
+#   Create a surface on screen that has the size of 640X480
     screen = pygame.display.set_mode((640,480))
     
 #   Load in background color
@@ -381,11 +389,12 @@ def main():
 
     # main loop
     while running:
-        # event handling, gets all event from the event queue
+        # event handling, gets all events from the event queue
         for event in pygame.event.get():
-            # only do something if the event is of type QUIT
+            # if the user clicks the "Start" button, the gameLoop method on line 304 is triggered
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 gameLoop(playerHand, serverHand, screen, ic, ac, client_socket, font, largeFont, black)
+            # if the user clicks the "x", the game closes
             elif event.type == pygame.QUIT:
                 running = False
                 pygame.quit()
