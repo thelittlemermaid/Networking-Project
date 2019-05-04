@@ -2,6 +2,8 @@
 War Card Game Server by: Ariel Inman & Alex Franklin
 Because Suits do not matter in War, we only care about the value of each card
 In the client we assign each card a RankValue from 0-12. (2-A).
+The Server will print out what your current IP is and you will use this
+when running the Card.py Script. Example: python3 Card.py 192.168.0.12
 Here is the list of how the RankValues correspond to each card:
 2 - 0
 3 - 1
@@ -24,8 +26,11 @@ import ast
 
 response = 0
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+hostname = socket.gethostname()
+IP = socket.gethostbyname(hostname)
+print("Your IP is: ", IP)
 # Enter IP for current machine
-server_socket.bind(('144.96.62.91', 8080))
+server_socket.bind((str(IP), 8080))
 server_socket.listen(5)
 conn, address = server_socket.accept()
 
