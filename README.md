@@ -1,4 +1,4 @@
-# Alex and Ariel's CSC 426 Networking Project
+# Alex and Ariel's CSC 435 Networking Project
 To run this project, first run the Server script.
 
 ```python
